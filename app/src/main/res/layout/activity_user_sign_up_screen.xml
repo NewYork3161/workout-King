@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    tools:context=".UserSignUpScreen">
+
+    <!-- First Name -->
+    <EditText
+        android:id="@+id/etFirstName"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:hint="First Name"
+        android:background="@drawable/input_blue_outline"
+        android:padding="12dp"
+        android:textColor="#000000"
+        android:textColorHint="#888888"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="48dp"
+        android:layout_marginHorizontal="32dp"/>
+
+    <!-- Last Name -->
+    <EditText
+        android:id="@+id/etLastName"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:hint="Last Name"
+        android:background="@drawable/input_blue_outline"
+        android:padding="12dp"
+        android:textColor="#000000"
+        android:textColorHint="#888888"
+        app:layout_constraintTop_toBottomOf="@id/etFirstName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="32dp"/>
+
+    <!-- Email -->
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:background="@drawable/input_blue_outline"
+        android:padding="12dp"
+        android:textColor="#000000"
+        android:textColorHint="#888888"
+        app:layout_constraintTop_toBottomOf="@id/etLastName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="32dp"/>
+
+    <!-- Password -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilPassword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="32dp"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="#00B7FF"
+        app:layout_constraintTop_toBottomOf="@id/etEmail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:background="@drawable/input_blue_outline"
+            android:padding="12dp"
+            android:textColor="#000000"
+            android:textColorHint="#888888"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Re-enter Password -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilRePassword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="32dp"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="#00B7FF"
+        app:layout_constraintTop_toBottomOf="@id/tilPassword"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <EditText
+            android:id="@+id/etRePassword"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Re-enter Password"
+            android:inputType="textPassword"
+            android:background="@drawable/input_blue_outline"
+            android:padding="12dp"
+            android:textColor="#000000"
+            android:textColorHint="#888888"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Back Button (LEFT) -->
+    <ImageView
+        android:id="@+id/imgBack"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:src="@drawable/back_btn"
+        android:contentDescription="Back"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toBottomOf="@id/tilRePassword"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="32dp"/>
+
+    <!-- Continue Button (RIGHT) -->
+    <ImageView
+        android:id="@+id/imgContinue"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:src="@drawable/continue_btn"
+        android:contentDescription="Continue"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toBottomOf="@id/tilRePassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="32dp"/>
+
+    <!-- Logo Bottom Right -->
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="400dp"
+        android:layout_height="200dp"
+        android:layout_margin="24dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="Workout King Logo"
+        android:src="@drawable/wk_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
