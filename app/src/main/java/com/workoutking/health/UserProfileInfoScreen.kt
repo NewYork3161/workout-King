@@ -17,37 +17,20 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import java.io.File
+import java.io.FileOutputStream
 
-/**
- * UserProfileInfoScreen
- *
- * PURPOSE:
- * This screen collects and manages the user's profile information.
- *
- * RESPONSIBILITIES:
- * - Allows the user to select a profile image from the device
- * - Crops the selected image into a perfect circle
- * - Allows the user to create a username
- * - Prevents navigation unless all required fields are completed
- * - Saves username + profile image URI to UserProfileInfoDatabaseHelper
- *
- * NAVIGATION:
- * - Continue → LoginScreen (only after successful save)
- *
- * NOTE:
- * - Image is stored as a URI (String)
- * - Cropping is visual only; original image remains intact
- */
 class UserProfileInfoScreen : AppCompatActivity() {
 
     private lateinit var imgProfile: ImageView
     private lateinit var etUsername: EditText
 
     private var imageSelected = false
-    private var selectedImageUri: Uri? = null
+    private var savedImagePath: String? = null
 
     companion object {
         private const val IMAGE_PICK_CODE = 1001
+        private const val PROFILE_IMAGE_NAME = "profile_image.jpg"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,66 +49,39 @@ class UserProfileInfoScreen : AppCompatActivity() {
 
         val profileDb = UserProfileInfoDatabaseHelper(this)
 
-        // Select profile image
         imgProfile.setOnClickListener {
             openImagePicker()
         }
 
-        // Continue → Validate → Save → Login
         findViewById<ImageView>(R.id.imgContinue).setOnClickListener {
 
             val username = etUsername.text.toString().trim()
 
-            // 1️⃣ Required fields
             if (!imageSelected || username.isEmpty()) {
                 showError("Please fill out all fields before continuing.")
                 return@setOnClickListener
             }
 
-            // 2️⃣ Username length sanity check
-            if (username.length < 3) {
-                showError("Username must be at least 3 characters.")
+            if (username.length < 3 || username.length > 20) {
+                showError("Username must be 3–20 characters.")
                 return@setOnClickListener
             }
 
-            if (username.length > 20) {
-                showError("Username cannot exceed 20 characters.")
-                return@setOnClickListener
-            }
-
-            // 3️⃣ Prevent duplicate usernames
-            val cursor = profileDb.getLatestProfile()
-            if (cursor.moveToFirst()) {
-                val existingUsername =
-                    cursor.getString(cursor.getColumnIndexOrThrow("username"))
-                if (existingUsername.equals(username, ignoreCase = true)) {
-                    cursor.close()
-                    showError("This username is already taken.")
-                    return@setOnClickListener
-                }
-            }
-            cursor.close()
-
-            // 4️⃣ Save to database
             val success = profileDb.insertProfile(
                 username = username,
-                imageUri = selectedImageUri?.toString()
+                imageUri = savedImagePath
             )
 
             if (!success) {
-                showError("Failed to save profile. Please try again.")
+                showError("Failed to save profile.")
                 return@setOnClickListener
             }
 
-            // ✅ Success
             startActivity(Intent(this, LoginScreen::class.java))
             finish()
         }
     }
 
-    /**
-     * Opens the system image picker.
-     */
     private fun openImagePicker() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         intent.type = "image/*"
@@ -136,22 +92,24 @@ class UserProfileInfoScreen : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == IMAGE_PICK_CODE && resultCode == Activity.RESULT_OK) {
-            val imageUri: Uri? = data?.data
-            imageUri?.let {
-                selectedImageUri = it
+            val imageUri: Uri? = data?.data ?: return
 
-                val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, it)
-                val circularBitmap = cropToCircle(bitmap)
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
 
-                imgProfile.setImageBitmap(circularBitmap)
-                imageSelected = true
+            // ✅ Copy image into internal storage
+            val imageFile = File(filesDir, PROFILE_IMAGE_NAME)
+            FileOutputStream(imageFile).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
             }
+
+            savedImagePath = imageFile.absolutePath
+
+            // Circular preview
+            imgProfile.setImageBitmap(cropToCircle(bitmap))
+            imageSelected = true
         }
     }
 
-    /**
-     * Crops a bitmap into a perfect circle (visual only).
-     */
     private fun cropToCircle(bitmap: Bitmap): Bitmap {
         val size = minOf(bitmap.width, bitmap.height)
         val output = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
@@ -164,7 +122,6 @@ class UserProfileInfoScreen : AppCompatActivity() {
 
         val radius = size / 2f
         canvas.drawCircle(radius, radius, radius, paint)
-
         return output
     }
 

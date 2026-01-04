@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Notifications (Android 13+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Exact alarms (Android 12+) -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,9 +17,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WorkoutKing">
+
+        <!-- WORKOUT CALENDAR -->
+        <activity
+            android:name=".WorkoutCalendarScreen"
+            android:exported="false" />
+
+        <!-- USER PROFILE -->
         <activity
             android:name=".UserProfileInfoScreen"
             android:exported="false" />
+
         <!-- SPLASH SCREEN (LAUNCHER) -->
         <activity
             android:name=".SplashScreen"
@@ -21,19 +35,37 @@
             android:theme="@style/Theme.WorkoutKing.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- LOGIN SCREEN (AFTER SPLASH) -->
+        </activity>
+
+        <!-- LOGIN SCREEN -->
         <activity
             android:name=".LoginScreen"
-            android:exported="false" /> <!-- USER SIGN-UP SCREEN -->
+            android:exported="false" />
+
+        <!-- USER SIGN-UP SCREEN -->
         <activity
             android:name=".UserSignUpScreen"
-            android:exported="false" /> <!-- UNIQUE USER HOME SCREEN -->
+            android:exported="false" />
+
+        <!-- UNIQUE USER HOME SCREEN -->
         <activity
             android:name=".UniqueUserHomeScreen"
             android:exported="false" />
+
+        <!-- 🔔 FULL-SCREEN ALARM ACTIVITY -->
+        <activity
+            android:name=".AlarmActivity"
+            android:exported="false"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true" />
+
+        <!-- 🔔 ALARM RECEIVER -->
+        <receiver
+            android:name=".AlarmReceiver"
+            android:exported="false" />
+
     </application>
 
 </manifest>
