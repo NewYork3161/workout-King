@@ -15,7 +15,6 @@ class AlarmActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Wake screen + show over lock screen
         window.addFlags(
             WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
                     WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or
@@ -24,11 +23,9 @@ class AlarmActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_alarm)
 
-        // Display the saved note text (or fallback)
         val noteText = intent.getStringExtra("note") ?: "Workout Reminder"
         findViewById<TextView>(R.id.tvAlarmText).text = noteText
 
-        // 🔊 Alarm sound (loops, bypasses DND)
         mediaPlayer = MediaPlayer().apply {
             setAudioAttributes(
                 AudioAttributes.Builder()
@@ -45,7 +42,6 @@ class AlarmActivity : AppCompatActivity() {
             start()
         }
 
-        // Stop alarm button
         findViewById<Button>(R.id.btnStopAlarm).setOnClickListener {
             stopAlarm()
         }

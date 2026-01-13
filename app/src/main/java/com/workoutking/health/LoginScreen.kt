@@ -1,6 +1,7 @@
 package com.workoutking.health
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.ImageView
@@ -10,20 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
-/**
- * LoginScreen
- *
- * Handles user login and account routing.
- *
- * LOGIN METHODS:
- * - Email + Password (UserSignUpInfoDatabaseHelper)
- * - Username + Password (UserProfileInfoDatabaseHelper → UserSignUpInfoDatabaseHelper)
- *
- * NOTE:
- * - Single-user flow assumed
- * - Latest profile is linked to latest signup
- */
 class LoginScreen : AppCompatActivity() {
+
+    companion object {
+        private const val PREFS_NAME = "login_prefs"
+        private const val KEY_LOGIN_INPUT = "login_input"
+        private const val KEY_PASSWORD = "login_password"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,16 +39,16 @@ class LoginScreen : AppCompatActivity() {
         val signUpDb = UserSignUpInfoDatabaseHelper(this)
         val profileDb = UserProfileInfoDatabaseHelper(this)
 
-        /* ------------------------------------------------------------
-         * CREATE ACCOUNT
-         * ------------------------------------------------------------ */
+        val prefs: SharedPreferences =
+            getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+
+        usernameOrEmailField.setText(prefs.getString(KEY_LOGIN_INPUT, ""))
+        passwordField.setText(prefs.getString(KEY_PASSWORD, ""))
+
         createAccountButton.setOnClickListener {
             startActivity(Intent(this, UserSignUpScreen::class.java))
         }
 
-        /* ------------------------------------------------------------
-         * LOGIN
-         * ------------------------------------------------------------ */
         loginButton.setOnClickListener {
 
             val input = usernameOrEmailField.text.toString().trim()
@@ -65,11 +59,11 @@ class LoginScreen : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // ---------------- EMAIL LOGIN ----------------
             if (input.contains("@")) {
 
                 if (signUpDb.validateLogin(input, password)) {
-                    goToHome()
+                    saveLoginPrefs(prefs, input, password)
+                    goToSurvey()
                 } else {
                     showError("Invalid email or password.")
                 }
@@ -77,9 +71,6 @@ class LoginScreen : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // ---------------- USERNAME LOGIN ----------------
-
-            // 1️⃣ Get latest profile
             val profileCursor = profileDb.getLatestProfile()
 
             if (!profileCursor.moveToFirst()) {
@@ -89,7 +80,9 @@ class LoginScreen : AppCompatActivity() {
             }
 
             val savedUsername =
-                profileCursor.getString(profileCursor.getColumnIndexOrThrow("username"))
+                profileCursor.getString(
+                    profileCursor.getColumnIndexOrThrow("username")
+                )
             profileCursor.close()
 
             if (!savedUsername.equals(input, ignoreCase = true)) {
@@ -97,7 +90,6 @@ class LoginScreen : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // 2️⃣ Get latest signup email
             val signUpCursor = signUpDb.readableDatabase.rawQuery(
                 "SELECT email FROM user_signup_info ORDER BY id DESC LIMIT 1",
                 null
@@ -112,21 +104,32 @@ class LoginScreen : AppCompatActivity() {
             val email = signUpCursor.getString(0)
             signUpCursor.close()
 
-            // 3️⃣ Validate password
             if (signUpDb.validateLogin(email, password)) {
-                goToHome()
+                saveLoginPrefs(prefs, input, password)
+                goToSurvey()
             } else {
                 showError("Invalid password.")
             }
         }
     }
 
+    private fun saveLoginPrefs(
+        prefs: SharedPreferences,
+        loginInput: String,
+        password: String
+    ) {
+        prefs.edit()
+            .putString(KEY_LOGIN_INPUT, loginInput)
+            .putString(KEY_PASSWORD, password)
+            .apply()
+    }
+
     private fun showError(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun goToHome() {
-        startActivity(Intent(this, UniqueUserHomeScreen::class.java))
+    private fun goToSurvey() {
+        startActivity(Intent(this, UserWorkoutSurveyScreen::class.java))
         finish()
     }
 }

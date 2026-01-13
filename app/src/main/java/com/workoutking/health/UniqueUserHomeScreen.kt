@@ -2,6 +2,7 @@ package com.workoutking.health
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -15,12 +16,25 @@ class UniqueUserHomeScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Attach the home screen layout
         setContentView(R.layout.activity_unique_user_home_screen)
+
+        val btnWorkout = findViewById<ImageView>(R.id.btnWorkout)
+        val btnProgress = findViewById<ImageView>(R.id.btnProgress)
+        val btnHome = findViewById<ImageView>(R.id.btnHome)
+        val btnMeals = findViewById<ImageView>(R.id.btnMeals)
+
+        btnWorkout.setOnClickListener {
+            startActivity(
+                Intent(this, UserWorkoutPlanScreen::class.java)
+            )
+        }
+
+        btnProgress.setOnClickListener { }
+        btnHome.setOnClickListener { }
+        btnMeals.setOnClickListener { }
 
         dashboardRecyclerView = findViewById(R.id.dashboardRecyclerView)
 
-        // Dashboard card data
         val dashboardItems = mutableListOf(
             DashboardItem(
                 id = 1,
@@ -44,28 +58,16 @@ class UniqueUserHomeScreen : AppCompatActivity() {
             )
         )
 
-        // Adapter with click handling
         dashboardAdapter = DashboardAdapter(dashboardItems) { item ->
-
             when (item.id) {
-                1 -> {
-                    // Gym Schedule → Calendar screen
-                    startActivity(
-                        Intent(this, WorkoutCalendarScreen::class.java)
-                    )
-                }
-
-                // Future routing (placeholders)
-                // 2 -> SuggestedWorkoutScreen
-                // 3 -> ProgressScreen
-                // 4 -> MealScreen
+                1 -> startActivity(Intent(this, WorkoutCalendarScreen::class.java))
+                2 -> startActivity(Intent(this, UserWorkoutPlanScreen::class.java))
             }
         }
 
         dashboardRecyclerView.layoutManager = GridLayoutManager(this, 2)
         dashboardRecyclerView.adapter = dashboardAdapter
 
-        // Drag & drop support
         val itemTouchHelper =
             ItemTouchHelper(DashboardItemTouchHelper(dashboardAdapter))
 

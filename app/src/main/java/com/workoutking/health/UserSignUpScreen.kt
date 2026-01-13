@@ -10,30 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
-/**
- * UserSignUpScreen
- *
- * PURPOSE:
- * This screen collects the user's basic sign-up information.
- *
- * RESPONSIBILITIES:
- * - Collects first name, last name, email, and password
- * - Enforces strong password requirements
- * - Prevents duplicate email registration
- * - Saves validated credentials to UserSignUpInfoDatabaseHelper
- *
- * PASSWORD RULES:
- * - 8–20 characters
- * - Must contain at least:
- *   • One letter (A–Z)
- *   • One number (0–9)
- *   • One special character: ! @ _ ?
- * - No other symbols allowed
- *
- * NAVIGATION:
- * - Back → LoginScreen
- * - Continue → UserProfileInfoScreen (ONLY after successful save)
- */
 class UserSignUpScreen : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,13 +34,11 @@ class UserSignUpScreen : AppCompatActivity() {
 
         val signUpDb = UserSignUpInfoDatabaseHelper(this)
 
-        // BACK → Login Screen
         backButton.setOnClickListener {
             startActivity(Intent(this, LoginScreen::class.java))
             finish()
         }
 
-        // CONTINUE → Validate → Save → Profile Screen
         continueButton.setOnClickListener {
 
             val firstName = firstNameField.text.toString().trim()
@@ -73,7 +47,6 @@ class UserSignUpScreen : AppCompatActivity() {
             val password = passwordField.text.toString()
             val rePassword = rePasswordField.text.toString()
 
-            // 1️⃣ Required fields
             if (
                 firstName.isEmpty() ||
                 lastName.isEmpty() ||
@@ -85,19 +58,16 @@ class UserSignUpScreen : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // 2️⃣ Email validation
             if (!email.contains("@") || email.startsWith("@") || email.endsWith("@")) {
                 showError("Please enter a valid email address.")
                 return@setOnClickListener
             }
 
-            // 3️⃣ Block duplicate emails
             if (signUpDb.emailExists(email)) {
                 showError("This email is already registered. Please log in.")
                 return@setOnClickListener
             }
 
-            // 4️⃣ Password length
             if (password.length < 8) {
                 showError("Password must be at least 8 characters.")
                 return@setOnClickListener
@@ -108,7 +78,6 @@ class UserSignUpScreen : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // 5️⃣ Password content rules
             val hasLetter = password.any { it.isLetter() }
             val hasDigit = password.any { it.isDigit() }
             val hasSpecial = password.any { it in listOf('!', '@', '_', '?') }
@@ -126,13 +95,11 @@ class UserSignUpScreen : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // 6️⃣ Password match
             if (password != rePassword) {
                 showError("Passwords do not match.")
                 return@setOnClickListener
             }
 
-            // 7️⃣ SAVE TO DATABASE
             val success = signUpDb.insertUser(
                 firstName = firstName,
                 lastName = lastName,
@@ -145,7 +112,6 @@ class UserSignUpScreen : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // ✅ Success → Continue flow
             startActivity(Intent(this, UserProfileInfoScreen::class.java))
             finish()
         }

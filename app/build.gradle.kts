@@ -38,15 +38,24 @@ android {
 }
 
 dependencies {
+
+    // ----- ANDROID + UI -----
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
 
-    // Android 12+ Splash Screen support
+    // Android 12+ Splash Screen
     implementation("androidx.core:core-splashscreen:1.0.1")
 
+    // ----- NETWORKING -----
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    // ----- JSON Parser -----
+    implementation("org.json:json:20210307")
+
+    // ----- TESTS -----
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

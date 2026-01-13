@@ -28,8 +28,6 @@ class DashboardAdapter(
     ) {
         val item = items[position]
         holder.bind(item)
-
-        // ✅ CLICK HANDLING (this is what was missing before)
         holder.itemView.setOnClickListener {
             onItemClick(item)
         }

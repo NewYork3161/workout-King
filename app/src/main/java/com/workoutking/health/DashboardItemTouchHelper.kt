@@ -3,21 +3,6 @@ package com.workoutking.health
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
-/**
- * DashboardItemTouchHelper
- *
- * PURPOSE:
- * - Handles drag & drop and swipe gestures for dashboard cards
- *
- * CURRENT STATE:
- * - Drag enabled (UP / DOWN / LEFT / RIGHT)
- * - Swipe disabled
- *
- * FUTURE:
- * - Snap-to-grid logic
- * - Long-press activation
- * - Animated rearranging
- */
 class DashboardItemTouchHelper(
     private val adapter: DashboardTouchAdapter
 ) : ItemTouchHelper.Callback() {
@@ -32,7 +17,7 @@ class DashboardItemTouchHelper(
                     ItemTouchHelper.LEFT or
                     ItemTouchHelper.RIGHT
 
-        val swipeFlags = 0 // No swipe-to-dismiss
+        val swipeFlags = 0
 
         return makeMovementFlags(dragFlags, swipeFlags)
     }
@@ -50,11 +35,9 @@ class DashboardItemTouchHelper(
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        // Swipe disabled — no action
     }
 
     override fun isLongPressDragEnabled(): Boolean {
-        // Later we can toggle this dynamically
         return true
     }
 }

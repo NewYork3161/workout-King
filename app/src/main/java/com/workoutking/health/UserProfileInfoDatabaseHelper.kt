@@ -6,28 +6,6 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-/**
- * UserProfileInfoDatabaseHelper
- *
- * This database is responsible ONLY for storing user profile information.
- *
- * Connected Screen:
- * - UserProfileInfoScreen
- *
- * What this database does:
- * - Stores username (screen name)
- * - Stores profile image URI
- *
- * What this database does NOT do:
- * - Authentication
- * - Passwords
- * - Login validation
- *
- * Notes:
- * - Image is stored as a URI (String), not raw image data
- * - Image selection and cropping are handled in code/UI
- * - This database is intentionally simple and expandable later
- */
 class UserProfileInfoDatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -61,10 +39,6 @@ class UserProfileInfoDatabaseHelper(context: Context) :
         onCreate(db)
     }
 
-    /**
-     * Inserts user profile info.
-     * Called from UserProfileInfoScreen.
-     */
     fun insertProfile(username: String, imageUri: String?): Boolean {
         val db = writableDatabase
 
@@ -80,10 +54,6 @@ class UserProfileInfoDatabaseHelper(context: Context) :
         return result != -1L
     }
 
-    /**
-     * Retrieves the latest saved user profile.
-     * Used later for Home Screen or auto-login.
-     */
     fun getLatestProfile(): Cursor {
         val db = readableDatabase
         return db.rawQuery(

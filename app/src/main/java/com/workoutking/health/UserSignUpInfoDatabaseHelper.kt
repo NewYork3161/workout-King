@@ -6,37 +6,12 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-/**
- * UserSignUpInfoDatabaseHelper
- *
- * PURPOSE:
- * Stores AUTHENTICATION credentials only.
- *
- * CONNECTED SCREENS:
- * - UserSignUpScreen (WRITE)
- * - LoginScreen (READ)
- *
- * STORES:
- * - First name
- * - Last name
- * - Email (UNIQUE)
- * - Password
- *
- * DOES NOT STORE:
- * - Usernames
- * - Profile images
- * - UI preferences
- *
- * IMPORTANT:
- * - Email is the PRIMARY AUTH IDENTIFIER
- * - Username login is resolved BEFORE reaching this database
- */
 class UserSignUpInfoDatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         const val DATABASE_NAME = "user_signup_info.db"
-        const val DATABASE_VERSION = 2 // ⬅️ VERSION BUMP REQUIRED
+        const val DATABASE_VERSION = 2
 
         const val TABLE_USERS = "user_signup_info"
 
@@ -68,10 +43,6 @@ class UserSignUpInfoDatabaseHelper(context: Context) :
         onCreate(db)
     }
 
-    /**
-     * Inserts a new user into the database.
-     * Returns FALSE if email already exists.
-     */
     fun insertUser(
         firstName: String,
         lastName: String,
@@ -99,10 +70,6 @@ class UserSignUpInfoDatabaseHelper(context: Context) :
         return result != -1L
     }
 
-    /**
-     * Checks whether an email already exists.
-     * Used during SIGN-UP validation.
-     */
     fun emailExists(email: String): Boolean {
         val db = readableDatabase
 
@@ -118,10 +85,6 @@ class UserSignUpInfoDatabaseHelper(context: Context) :
         return exists
     }
 
-    /**
-     * Validates login credentials.
-     * Email must already be resolved (username → email happens elsewhere).
-     */
     fun validateLogin(email: String, password: String): Boolean {
         val db = readableDatabase
 

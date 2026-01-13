@@ -65,10 +65,8 @@ class CalendarNoteDialog : DialogFragment() {
         val prefs =
             requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-        // Load saved note
         etNote.setText(prefs.getString(selectedDate, ""))
 
-        // Load saved alarm
         val savedAlarm = prefs.getLong(selectedDate + KEY_ALARM_SUFFIX, -1L)
         if (savedAlarm != -1L) {
             alarmTimeMillis = savedAlarm
@@ -79,12 +77,10 @@ class CalendarNoteDialog : DialogFragment() {
             tvAlarmTime.text = "No alarm set"
         }
 
-        // Alarm button
         btnAlarm.setOnClickListener {
             openTimePicker(tvAlarmTime)
         }
 
-        // Save note button
         btnSave.setOnClickListener {
             prefs.edit()
                 .putString(selectedDate, etNote.text.toString())
@@ -94,7 +90,6 @@ class CalendarNoteDialog : DialogFragment() {
             dismiss()
         }
 
-        // Cancel
         btnCancel.setOnClickListener {
             dismiss()
         }
@@ -125,7 +120,6 @@ class CalendarNoteDialog : DialogFragment() {
 
                 alarmTimeMillis = alarmCal.timeInMillis
 
-                // Save alarm time locally
                 requireContext()
                     .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
                     .edit()
@@ -135,7 +129,6 @@ class CalendarNoteDialog : DialogFragment() {
                     )
                     .apply()
 
-                // 🔔 Schedule alarm using DATE KEY (IMPORTANT)
                 scheduleAlarm(alarmCal.timeInMillis)
 
                 val timeText =
@@ -161,7 +154,6 @@ class CalendarNoteDialog : DialogFragment() {
         val alarmManager =
             requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        // Android 12+ exact alarm permission check
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (!alarmManager.canScheduleExactAlarms()) {
                 Toast.makeText(
@@ -177,7 +169,6 @@ class CalendarNoteDialog : DialogFragment() {
             }
         }
 
-        // ✅ PASS THE DATE (NOT NOTE TEXT)
         val intent = Intent(requireContext(), AlarmReceiver::class.java).apply {
             putExtra("date", selectedDate)
         }
@@ -196,7 +187,6 @@ class CalendarNoteDialog : DialogFragment() {
         )
     }
 
-    // Popup size fix
     override fun onStart() {
         super.onStart()
         dialog?.window?.setLayout(

@@ -96,7 +96,6 @@ class UserProfileInfoScreen : AppCompatActivity() {
 
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
 
-            // ✅ Copy image into internal storage
             val imageFile = File(filesDir, PROFILE_IMAGE_NAME)
             FileOutputStream(imageFile).use { out ->
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
@@ -104,7 +103,6 @@ class UserProfileInfoScreen : AppCompatActivity() {
 
             savedImagePath = imageFile.absolutePath
 
-            // Circular preview
             imgProfile.setImageBitmap(cropToCircle(bitmap))
             imageSelected = true
         }
