@@ -13,12 +13,55 @@ class DashboardAdapter(
 ) : RecyclerView.Adapter<DashboardAdapter.DashboardViewHolder>(),
     DashboardTouchAdapter {
 
+    // ============================
+    //  WORKOUT IMAGES (1–10)
+    // ============================
+
+    private val workoutImages = listOf(
+        R.drawable.bodybuilding_image_1,
+        R.drawable.bodybuilding_image_2,
+        R.drawable.bodybuilding_image_3,
+        R.drawable.bodybuilding_image_4,
+        R.drawable.bodybuilding_image_5,
+        R.drawable.bodybuilding_image_6,
+        R.drawable.bodybuilding_image_7,
+        R.drawable.bodybuilding_image_8,
+        R.drawable.bodybuilding_image_9,
+        R.drawable.bodybuilding_image_10
+    )
+
+    // ============================
+    //  MEAL PLAN IMAGES (1–10)
+    // ============================
+
+    private val mealImages = listOf(
+        R.drawable.meal_plan_image_1,
+        R.drawable.meal_plan_image_2,
+        R.drawable.meal_plan_image_3,
+        R.drawable.meal_plan_image_4,
+        R.drawable.meal_plan_image_5,
+        R.drawable.meal_plan_image_6,
+        R.drawable.meal_plan_image_7,
+        R.drawable.meal_plan_image_8,
+        R.drawable.meal_plan_image_9,
+        R.drawable.meal_plan_image_10
+    )
+
+    // ============================
+    //  SAVE RANDOM IMAGE PER CARD
+    //  So scrolling does NOT change images
+    // ============================
+
+    private val randomImageMap = hashMapOf<Int, Int>()
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): DashboardViewHolder {
+
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_dashboard_card, parent, false)
+
         return DashboardViewHolder(view)
     }
 
@@ -27,7 +70,32 @@ class DashboardAdapter(
         position: Int
     ) {
         val item = items[position]
-        holder.bind(item)
+
+        // ==========================================================
+        // RANDOM IMAGE SELECTION (ONLY ONCE WHEN APP OPENS)
+        // ==========================================================
+
+        val selectedImageResId = randomImageMap.getOrPut(item.id) {
+            when (item.id) {
+
+                // CALENDAR → leave as is
+                1 -> R.drawable.google_calendar_img
+
+                // WORKOUT → choose random from 10 images
+                2 -> workoutImages.random()
+
+                // PROGRESS → choose random from workout images
+                3 -> workoutImages.random()
+
+                // MEAL PLAN → choose random from 10 images
+                4 -> mealImages.random()
+
+                else -> item.imageResId
+            }
+        }
+
+        holder.bind(item, selectedImageResId)
+
         holder.itemView.setOnClickListener {
             onItemClick(item)
         }
@@ -41,6 +109,10 @@ class DashboardAdapter(
         notifyItemMoved(fromPosition, toPosition)
     }
 
+    // ============================
+    //  VIEW HOLDER
+    // ============================
+
     class DashboardViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
 
@@ -50,9 +122,9 @@ class DashboardAdapter(
         private val tvTitle: TextView =
             itemView.findViewById(R.id.tvCardTitle)
 
-        fun bind(item: DashboardItem) {
+        fun bind(item: DashboardItem, imageResId: Int) {
             tvTitle.text = item.title
-            imgBackground.setImageResource(item.imageResId)
+            imgBackground.setImageResource(imageResId)
         }
     }
 }

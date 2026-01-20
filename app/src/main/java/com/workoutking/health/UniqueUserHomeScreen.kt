@@ -54,7 +54,7 @@ class UniqueUserHomeScreen : AppCompatActivity() {
             DashboardItem(
                 id = 4,
                 title = "Morning Meal Suggestion",
-                imageResId = R.drawable.morning_meal_suggestion_img
+                imageResId = R.drawable.meal_plan_image_7
             )
         )
 

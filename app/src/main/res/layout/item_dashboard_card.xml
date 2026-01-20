@@ -15,17 +15,25 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Background Image -->
+        <!-- 🔥 RANDOMIZED BACKGROUND IMAGE -->
         <ImageView
             android:id="@+id/imgCardBackground"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:alpha="1.0"
-            android:src="@drawable/google_calendar_img"
-            android:contentDescription="Dashboard card background" />
+            android:contentDescription="Dashboard card background"
+            android:adjustViewBounds="true"/>
 
-        <!-- Card Title -->
+        <!-- 🔥 GLOSS OVERLAY (Your gloss_effect_overlay.xml) -->
+        <ImageView
+            android:id="@+id/glossOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/gloss_effect_overlay"
+            android:scaleType="fitXY"
+            android:alpha="0.60"/>
+
+        <!-- 🔥 CARD TITLE -->
         <TextView
             android:id="@+id/tvCardTitle"
             android:layout_width="wrap_content"
